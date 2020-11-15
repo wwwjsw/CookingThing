@@ -1,14 +1,22 @@
 import React from 'react';
-import {View, Image} from 'react-native';
+import {TouchableOpacity, Image} from 'react-native';
 
-export default () => {
+interface IRemoveButtonProps {
+  handlePress: () => void;
+}
+
+const RemoveButton = (props: IRemoveButtonProps) => {
+  const {handlePress} = props;
+
   return (
-    <View>
+    <TouchableOpacity onPress={handlePress}>
       <Image
         width={32}
         height={32}
         source={require('../images/RemoveButton.png')}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
+
+export default RemoveButton;

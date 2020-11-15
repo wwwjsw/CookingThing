@@ -1,14 +1,21 @@
 import React from 'react';
-import {View, Image} from 'react-native';
+import {TouchableOpacity, Image} from 'react-native';
+interface IAddButtonProps {
+  handlePress: () => void;
+}
 
-export default () => {
+const AddButton = (props: IAddButtonProps) => {
+  const {handlePress} = props;
+
   return (
-    <View>
+    <TouchableOpacity onPress={handlePress}>
       <Image
         width={32}
         height={32}
         source={require('../images/AddButton.png')}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
+
+export default AddButton;
