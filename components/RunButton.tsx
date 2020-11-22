@@ -1,14 +1,21 @@
 import React from 'react';
-import {View, Image} from 'react-native';
+import {TouchableOpacity, Image} from 'react-native';
 
-export default () => {
+interface IRunButton {
+  handlePress: () => void;
+}
+const RunButon = (props: IRunButton) => {
+  const {handlePress} = props;
+
   return (
-    <View>
+    <TouchableOpacity onPress={handlePress}>
       <Image
         width={48}
         height={48}
         source={require('../images/RunButton.png')}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
+
+export default RunButon;
