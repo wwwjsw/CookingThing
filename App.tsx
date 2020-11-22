@@ -8,7 +8,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,24 +16,60 @@ import {
   View,
   Text,
   StatusBar,
+  TextInput,
   Image,
 } from 'react-native';
+import _, {toInteger} from 'lodash';
 
 import cssConstrains from './constrains/Css.constrains';
 import AddButton from './components/AddButton';
 import RemoveButton from './components/RemoveButton';
 import RunButton from './components/RunButton';
 
-const mock = [
-  {id: 1, description: 'Egg 🍳', time: '12 Min'},
-  {id: 2, description: 'Eggplant 🍆', time: '22 Min'},
-  {id: 3, description: 'Banana 🍌', time: '5 Min'},
-  {id: 4, description: 'Pumpkin 🎃', time: '25 Min'},
-  {id: 5, description: 'Carrot 🥕', time: '15 Min'},
-  {id: 6, description: 'Broccoli 🥦', time: '7 Min'},
-];
+interface IItem {
+  id: number;
+  description: string;
+  time: number;
+}
 
 const App = () => {
+  const [items, setItems] = useState<Array<IItem>>([]);
+  const [description, setDescription] = useState('Egg 🥚');
+  const [time, setTime] = useState(0);
+
+  const _findMaxTimeInItens = () => {
+    const maxDate = _(items).map('time').flatten().max();
+    return maxDate;
+  };
+
+  const _startTimer = () => {
+    // TODO: Agendar Alarme para cada item.
+    // TODO: Achar o maior tempo entre os itens.
+    const max = _findMaxTimeInItens();
+    console.warn(max);
+    // TODO: Iniciar timer.
+    // TODO: Definir started = true.
+  };
+
+  const _newItem = () => {
+    const data: IItem = {
+      id: Math.random() * 2,
+      description: description,
+      time: time,
+    };
+
+    const newData = items?.concat(data);
+
+    setItems(newData);
+  };
+
+  const _removeItem = (id: number) => {
+    const filteredItems = items.filter(function (value) {
+      return value.id !== id;
+    });
+    setItems(filteredItems);
+  };
+
   return (
     <>
       <StatusBar barStyle="light-content" />
@@ -50,27 +86,56 @@ const App = () => {
                 ...styles.sectionContainerList,
                 backgroundColor: colors.weakBlue,
               }}>
-              <Text style={{...cssConstrains._F1, ...cssConstrains._MH10}}>
-                Describe Your Food
-              </Text>
-              <Text style={{...cssConstrains._MR10}}>0 Min</Text>
-              <AddButton />
+              <TextInput
+                selectTextOnFocus
+                style={{
+                  ...cssConstrains._F1,
+                  ...cssConstrains._MH10,
+                  color: colors.white,
+                }}
+                onChangeText={(text) => setDescription(text)}
+                value={description}
+              />
+              <TextInput
+                selectTextOnFocus
+                style={{
+                  ...cssConstrains._MH10,
+                  color: colors.white,
+                }}
+                onChangeText={(minutes) => setTime(toInteger(minutes))}
+                value={time.toString()}
+                keyboardType="numeric"
+              />
+              <Image
+                style={{...cssConstrains._MR10}}
+                source={require('./images/clock.png')}
+              />
+              <AddButton handlePress={() => _newItem()} />
             </View>
-            {mock.map((i) => {
+            {items.map((i) => {
               return (
                 <View key={i.id} style={styles.sectionContainerList}>
-                  <Text style={{...cssConstrains._F1, ...cssConstrains._MH10}}>
+                  <Text
+                    style={{
+                      ...cssConstrains._F1,
+                      ...cssConstrains._MH10,
+                      color: colors.black,
+                    }}>
                     {i.description}
                   </Text>
                   <Text style={{...cssConstrains._MR10}}>{i.time}</Text>
-                  <RemoveButton />
+                  <Image
+                    style={{...cssConstrains._MR10}}
+                    source={require('./images/clock.png')}
+                  />
+                  <RemoveButton handlePress={() => _removeItem(i.id)} />
                 </View>
               );
             })}
           </View>
         </ScrollView>
         <View style={styles.sectionContainerFooter}>
-          <RunButton />
+          <RunButton handlePress={() => _startTimer()} />
         </View>
       </SafeAreaView>
     </>
